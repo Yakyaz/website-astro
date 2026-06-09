@@ -1,0 +1,19 @@
+---
+const currentPath = Astro.url.pathname;
+---
+
+<header class="w-full px-4 pt-8 pb-4  border-zinc-900 flex justify-start items-center text-xs font-mono">
+
+	<nav class="flex gap-6 text-zinc-500">
+		<a href="/" class={currentPath === "/" ? "text-white underline" : "hover:text-zinc-300"}>
+			[home]
+		</a>
+		<a href="/blog" class={currentPath.startsWith("/blog") ? "text-white underline" : "hover:text-zinc-300"}>
+			[blog]
+		</a>
+
+		<a href="https://pet-finder.yakyaz.dev/" class="hover:text-white">
+			[pet_finder ->]
+		</a>
+	</nav>
+</header>

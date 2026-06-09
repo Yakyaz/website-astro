@@ -1,0 +1,19 @@
+# Build-Ausgabe und Astro-Cache
+dist/
+.astro/
+
+# Abhängigkeiten (werden auf dem Server neu installiert)
+node_modules/
+
+# Lokale Umgebungsvariablen (Geheimnisse / API-Keys)
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+*.local
+
+# IDE-Einstellungen und Systemdateien
+.vscode/
+.DS_Store
+Thumbs.db
