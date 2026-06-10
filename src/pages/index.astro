@@ -1,19 +1,11 @@
 ---
 import BaseHead from '../components/BaseHead.astro';
 import Header from '../components/Header.astro';
+import Weather from '../components/Weather.astro';
+import GitHubGrid from '../components/GitHubGrid.astro';
 import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
 
-interface GitHubRepo {
-  name: string;
-  description: string | null;
-  html_url: string;
-  language: string | null;
-}
 
-const githubUsername = "Yakyaz"; 
-let repos: GitHubRepo[] = [];
-
-// 1. DYNAMIC AGE CALCULATION (Birthdate: August 7, 2003)
 const birthDate = new Date(2003, 7, 7); 
 const today = new Date();
 let age = today.getFullYear() - birthDate.getFullYear();
@@ -21,111 +13,82 @@ const monthDifference = today.getMonth() - birthDate.getMonth();
 if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthDate.getDate())) {
   age--;
 }
-
-// 2. LIVE DORTMUND WEATHER FETCH (Open-Meteo API)
-let temperature: string = "---";
-try {
-  const weatherResponse = await fetch('https://api.open-meteo.com/v1/forecast?latitude=51.5136&longitude=7.4653&current_weather=true');
-  if (weatherResponse.ok) {
-    const weatherData = await weatherResponse.json();
-    temperature = `${weatherData.current_weather.temperature}°C`;
-  }
-} catch (error) {
-  console.error("System pipeline error fetching weather metrics:", error);
-}
-
-// 3. GITHUB REPOSITORIES FETCH
-try {
-  const response = await fetch(`https://api.github.com/users/${githubUsername}/repos?sort=updated&per_page=6`);
-  if (response.ok) {
-    repos = (await response.json()) as GitHubRepo[];
-  }
-} catch (error) {
-  console.error("System pipeline error fetching repositories:", error);
-}
 ---
 
 <!doctype html>
 <html lang="en">
-	<head>
-		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
-	</head>
-	<body class="bg-[#000000] text-zinc-400 min-h-screen font-mono text-left selection:bg-zinc-800">
-		<Header />
-		
-		<main class="w-full px-4 py-8 flex flex-col gap-12 max-w-5xl">
-			
-			<section class="space-y-4">
-				<div class="flex justify-between items-baseline">
-					<h1 class="text-base font-bold text-zinc-100">yakyaz</h1>
-					<a href="mailto:contact@yakyaz.dev" class="text-xs text-zinc-400 hover:text-white">contact@yakyaz.dev</a>
-				</div>
-
+    <head>
+        <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+    </head>
+    <body class="bg-[#000000] text-zinc-400 min-h-screen font-mono text-left selection:bg-zinc-800 px-8">
+        <Header />
+        
+        <main class="w-full px-4 py-8 flex flex-col gap-12 max-w-5xl">
+            
+            <section class="space-y-4">
                 <p class="text-zinc-400 text-xs leading-relaxed max-w-3xl pt-2">
                     Hi, I'm Yakup, a {age} y/o Computer Science M.Sc. student @ TU Dortmund University from Germany, interested in security.
                 </p>
-				<p class="text-zinc-500 text-xs">
-					It is currently <span class="text-zinc-300">{temperature}</span> where I live near Dortmund.
-				</p>
-			</section>
+                
+                <Weather server:defer />
+            </section>
 
-			<section class="space-y-6">
-				<h2 class="text-xs font-bold text-zinc-100 uppercase tracking-wider">Projects</h2>
-				
-				<div class="space-y-4 text-xs">
-					<div class="grid grid-cols-1 md:grid-cols-4 gap-2">
-						<div class="font-bold text-zinc-100">
-							Humanoid Robotics [current]
-						</div>
-						<div class="md:col-span-3 text-zinc-400 leading-relaxed">
-							University project module at Fraunhofer IML. Developing systems to enable a humanoid robot to track and catch a ball dynamically.
-						</div>
-					</div>
+            <section class="space-y-6">
+                <h2 class="text-xs font-bold text-zinc-100 uppercase tracking-wider">Projects</h2>
+                
+                <div class="space-y-4 text-xs">
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-2">
+                        <div class=" text-zinc-100">
+                            Humanoid Robotics [current]
+                        </div>
+                        <div class="md:col-span-3 text-zinc-400 leading-relaxed">
+                            University project module at Fraunhofer IML. Developing systems to enable a humanoid robot to track and catch a ball dynamically.
+                        </div>
+                    </div>
 
-					<div class="grid grid-cols-1 md:grid-cols-4 gap-2">
-						<div class="font-bold">
-							<a href="https://pet-finder.yakyaz.dev/" class="text-zinc-100 underline decoration-zinc-700 underline-offset-4">Pet-Finder [in progress]</a>
-						</div>
-						<div class="md:col-span-3 text-zinc-400 leading-relaxed">
-							An operational crypto tracking layout for missing pets. Implements asymmetric encryption patterns preventing server-side credential leaking until flag activation. Uses WebAuthn Passkeys.
-						</div>
-					</div>
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-2">
+                        <div class="">
+                            <span class="text-zinc-100">Pet-Finder [in progress]</span>
+                        </div>
+                        <div class="md:col-span-3 text-zinc-400 leading-relaxed">
+                            An operational crypto tracking layout for missing pets. Implements asymmetric encryption patterns preventing server-side credential leaking until flag activation. Uses WebAuthn Passkeys.
+                        </div>
+                    </div>
 
-					<div class="grid grid-cols-1 md:grid-cols-4 gap-2">
-						<div class="font-bold">
-							<span class="text-zinc-100">yakyaz.dev</span>
-						</div>
-						<div class="md:col-span-3 text-zinc-400 leading-relaxed">
-							Generated statically via Astro framework. Intentionally unbloated.
-						</div>
-					</div>
-				</div>
-			</section>
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-2">
+                        <div class="">
+                            <span class="text-zinc-100">yakyaz.dev</span>
+                        </div>
+                        <div class="md:col-span-3 text-zinc-400 leading-relaxed">
+                            Generated statically via Astro framework. Intentionally unbloated.
+                        </div>
+                    </div>
+                </div>
+            </section>
 
-			<section class="space-y-4 pt-4">
-				<h2 class="text-xs font-bold text-zinc-100 uppercase tracking-wider">Activity</h2>
-				<div class="flex flex-col gap-2 text-xs text-zinc-500">
-					<div class="mb-2">GitHub</div>
-					<div class="w-full max-w-xl opacity-85">
-						<img 
-							src={`https://ghchart.rshah.org/2563eb/${githubUsername}`} 
-							alt="GitHub contributions map stream"
-							class="w-full h-auto block mix-blend-screen"
-						/>
-					</div>
-				</div>
-			</section>
+            <section class="space-y-4 pt-4">
+                <h2 class="text-xs font-bold text-zinc-100 uppercase tracking-wider">Activity</h2>
+                <GitHubGrid server:defer />
+            </section>
 
-			<section class="space-y-4">
-				<h2 class="text-xs font-bold text-zinc-100 uppercase tracking-wider">Links</h2>
-				<div class="flex flex-col gap-2 text-xs text-zinc-400">
-					<div><a href="https://github.com/Yakyaz" target="_blank" rel="noopener noreferrer">↗ github</a></div>
-					<div><a href="https://www.instagram.com/yakyaz_/" target="_blank" rel="noopener noreferrer">↗ instagram</a></div>
-					<div><a href="https://www.linkedin.com/in/yakup-yazir-aa9a61247/" target="_blank" rel="noopener noreferrer">↗ linkedin</a></div>
-					<div><a href="https://www.reddit.com/user/It3chii/" target="_blank" rel="noopener noreferrer">↗ reddit</a></div>
-				</div>
-			</section>
-
-		</main>
-	</body>
+            <section class="space-y-4">
+                <h2 class="text-xs font-bold text-zinc-100 uppercase tracking-wider">Links</h2>
+                <div class="flex flex-col gap-2 text-xs text-zinc-400">
+                    <div><a href="https://github.com/Yakyaz" target="_blank" rel="noopener noreferrer">↗ github</a></div>
+                    <div><a href="https://www.instagram.com/yakyaz_/" target="_blank" rel="noopener noreferrer">↗ instagram</a></div>
+                    <div><a href="https://www.linkedin.com/in/yakup-yazir-aa9a61247/" target="_blank" rel="noopener noreferrer">↗ linkedin</a></div>
+                    <div><a href="https://www.reddit.com/user/It3chii/" target="_blank" rel="noopener noreferrer">↗ reddit</a></div>
+                </div>
+            </section>
+            
+            <section class="space-y-4 pt-4">
+                <h2 class="text-xs font-bold text-zinc-100 uppercase tracking-wider">Contact</h2>
+                <div class="text-xs">
+                    <a href="mailto:contact@yakyaz.dev" class="text-zinc-400 hover:text-zinc-100 underline decoration-zinc-700 underline-offset-4">
+                        contact@yakyaz.dev
+                    </a>
+                </div>
+            </section>
+        </main>
+    </body>
 </html>
